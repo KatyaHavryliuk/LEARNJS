@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Генератор пароля</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <h4>Генератор пароля</h4>
+    <form id="password-form">
+      <div class="input-field">
+        <label for="length">Довжина пароля</label>
+        <input type="number" id="length" min="6" max="20" required>
+      </div>
+      <p>Виберіть параметри пароля:</p>
+      <label><input type="checkbox" id="upper-case" /><span>Великі літери</span></label><br>
+      <label><input type="checkbox" id="lower-case" /><span>Малі літери</span></label><br>
+      <label><input type="checkbox" id="numbers" /><span>Числа</span></label><br>
+      <label><input type="checkbox" id="special-chars" /><span>Спеціальні символи</span></label><br><br>
+      <button class="btn" type="submit">Згенерувати пароль</button>
+    </form>
+  </div>
+  <div id="password-popup" class="modal">
+    <div class="modal-content">
+      <h4>Згенерований пароль:</h4>
+      <p id="password-output">Тут має бути згенерований пароль</p>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close btn">Закрити</a>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('.modal').modal();
+      $('#password-form').submit(function (e) {
+        e.preventDefault();
+        const length = $('#length').val();
+        const upperCase = $('#upper-case').prop('checked');
+        const lowerCase = $('#lower-case').prop('checked');
+        const numbers = $('#numbers').prop('checked');
+        const specialChars = $('#special-chars').prop('checked');
+        const password = generatePassword(length, upperCase, lowerCase, numbers, specialChars);
+        $('#password-output').text(password);
+        $('#password-popup').modal('open');
+      });
+    });
+    function generatePassword(length, upperCase, lowerCase, numbers, specialChars) {
+      const upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      const lower = "abcdefghijklmnopqrstuvwxyz";
+      const num = "0123456789";
+      const special = "!@#$%^&*()_+{}[]<>?/";
+      let allChars = "";
+      let password = "";
+      if (upperCase) allChars += upper;
+      if (lowerCase) allChars += lower;
+      if (numbers) allChars += num;
+      if (specialChars) allChars += special;
+      if (allChars.length === 0) {
+          return "Оберіть хоча б один параметр";
+      }
+      for (let i = 0; i < length; i++) {
+          const randomIndex = Math.floor(Math.random() * allChars.length);
+          password += allChars[randomIndex];
+      }
+      return password;
+    }
+  </script>
+</body>
+</html>
